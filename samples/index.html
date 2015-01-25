@@ -1,0 +1,125 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>tags-input sample</title>
+
+    <link rel="stylesheet" href="../dist/angular-tags-input.css"/>
+
+    <script src="../bower_components/angular/angular.js"></script>
+    <script src="../bower_components/angular-sanitize/angular-sanitize.js"></script>
+    <script src="../dist/angular-tags-input.js"></script>
+    <script src="../../auto-grow-input/dist/angular-auto-grow-input.js"></script>
+    <script src="../../select-options/dist/angular-select-options.js"></script>
+    <script src="../../disable-all/dist/angular-disable-all.js"></script>
+    <script src="tagsInputSample.js"></script>
+
+</head>
+<body ng-app="tagsInputSample">
+
+    <!-- =================================================================== -->
+
+    <h1>Basic usage:</h1>
+    <tags-input placeholder="Add your tags here"
+               ng-model="myTags"
+               select-options="tag.name for tag in tags">
+    </tags-input>
+
+    <!-- =================================================================== -->
+
+    <h1>Tag add with minimal 3 characters length word</h1>
+    <tags-input placeholder="Add your tags here"
+                ng-model="myTags2"
+                min-length="3"
+                select-options="tag.name for tag in tags">
+    </tags-input>
+
+    <!-- =================================================================== -->
+
+    <h1>Tag add with maximal 5 characters length word</h1>
+    <tags-input placeholder="Add your tags here"
+                ng-model="myTags3"
+                max-length="5"
+                select-options="tag.name for tag in tags">
+    </tags-input>
+
+    <!-- =================================================================== -->
+
+    <h1>Tag add with maximal number of tags allowed to type</h1>
+    <tags-input placeholder="Add your tags here"
+                ng-model="myTags4"
+                max-items="5"
+                select-options="tag.name for tag in tags">
+    </tags-input>
+
+    <!-- =================================================================== -->
+
+    <h1>Tag unique name restriction</h1>
+    <tags-input placeholder="Add your tags here"
+                ng-model="myTags5"
+                unique-names="true"
+                select-options="tag.name for tag in tags">
+    </tags-input>
+
+    <!-- =================================================================== -->
+
+    <h1>Delimiter character that can be used to add separated tags</h1>
+    <tags-input placeholder="Add your tags here"
+                ng-model="myTags6"
+                delimiters="[',', '.']"
+                select-options="tag.name for tag in tags">
+    </tags-input>
+
+    <!-- =================================================================== -->
+
+    <h1>Persist disabled (cannot add a new tags)</h1>
+    <tags-input placeholder="Add your tags here"
+                persist="false"
+                ng-model="myTags6"
+                select-options="tag.name for tag in tags">
+    </tags-input>
+
+    <!-- =================================================================== -->
+
+    <h1>Disabled component</h1>
+    <tags-input placeholder="Add your tags here"
+                disabled="disable"
+                ng-model="myTags6"
+                select-options="tag.name for tag in tags">
+    </tags-input>
+    <button ng-click="disable = !disable">enable/disable component</button>
+
+    <!-- =================================================================== -->
+
+    <h1>With / without remove button</h1>
+    <tags-input placeholder="Add your tags here"
+                disabled="disable"
+                is-remove-button="isRemoveButton"
+                ng-model="myTags7"
+                select-options="tag.name for tag in tags">
+    </tags-input>
+    <button ng-click="isRemoveButton = !isRemoveButton">with/without remove button</button>
+
+    <!-- =================================================================== -->
+
+    <h1>Restore on backspace press</h1>
+    <tags-input placeholder="Add your tags here"
+                is-restore-on-backspace="isRestoreOnBackspace"
+                ng-model="myTags8"
+                select-options="tag.name for tag in tags">
+    </tags-input>
+    <button ng-click="isRestoreOnBackspace = !isRestoreOnBackspace">with/without restore on backspace button press</button>
+
+    <!-- =================================================================== -->
+
+    <h1>Custom decorator</h1>
+    <tags-input placeholder="Add your tags here"
+                decorator="decorator"
+                ng-model="myTags9"
+                select-options="tag.name for tag in tags">
+    </tags-input>
+
+    <!-- =================================================================== -->
+
+</body>
+</html>
