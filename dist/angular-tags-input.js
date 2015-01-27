@@ -13,7 +13,7 @@
     angular.module('tagsInput', ['autoGrowInput', 'selectOptions', 'disableAll', 'ngSanitize']);
 
 })();
-angular.module("tagsInput").run(["$templateCache", function($templateCache) {$templateCache.put("tags-input.html","<div class=\"token-input-container\" ng-attr-style=\"max-width: {{ containerWidth }}px\" disable-all=\"disabled\">\n    <div ng-repeat=\"tag in getTags()\" class=\"token-item\">\n        <div class=\"token\" tabindex=\"{{ $index }}\"\n             ng-click=\"tagSelect($event, tag)\"\n             ng-class=\"{ selected: isSelected(tag) }\">\n            <div class=\"token-template\" ng-bind-html=\"getItemName(tag)\"></div>\n            <a class=\"token-remove\" ng-show=\"isRemoveButton\" ng-click=\"tagRemove($event, $index)\">×</a>\n        </div>\n\n    </div>\n    <div class=\"token-item\">\n        <input auto-grow-input\n               ng-model=\"tokenInputValue\"\n               ng-change=\"onInputValueChange(tokenInputValue)\"\n               ng-attr-placeholder=\"{{ !getTags().length ? placeholder : \'\' }}\"\n               autocomplete=\"off\"\n               ng-disabled=\"isDisabled\">\n    </div>\n    <div class=\"loading\" ng-show=\"loadingInProgress\"></div>\n</div>\n");}]);
+angular.module("tagsInput").run(["$templateCache", function($templateCache) {$templateCache.put("tags-input.html","<div class=\"tags-input\" ng-attr-style=\"max-width: {{ containerWidth }}px\" disable-all=\"disabled\">\n    <div ng-repeat=\"tag in getTags()\" class=\"token-item\">\n        <div class=\"token\" tabindex=\"{{ $index }}\"\n             ng-click=\"tagSelect($event, tag)\"\n             ng-class=\"{ selected: isSelected(tag) }\">\n            <div class=\"token-template\" ng-bind-html=\"getItemName(tag)\"></div>\n            <a class=\"token-remove\" ng-show=\"isRemoveButtonEnabled\" ng-click=\"tagRemove($event, $index)\">×</a>\n        </div>\n\n    </div>\n    <div class=\"token-item\">\n        <input auto-grow-input\n               ng-model=\"tokenInputValue\"\n               ng-change=\"onInputValueChange(tokenInputValue)\"\n               ng-attr-placeholder=\"{{ !getTags().length ? placeholder : \'\' }}\"\n               autocomplete=\"off\"\n               ng-disabled=\"isDisabled\">\n    </div>\n    <div class=\"loading\" ng-show=\"loadingInProgress\"></div>\n</div>\n");}]);
 /**
  * @author Umed Khudoiberdiev <info@zar.tj>
  */
@@ -25,28 +25,43 @@ angular.module("tagsInput").run(["$templateCache", function($templateCache) {$te
      * @name tagsInput
      * @description
      * A special angular directive that allows to add "tags" into input box.
+     *
+     * @param {expression} ngModel Model that will be changed
+     * @param {string} placeholder Text that will be added to input as default text (placeholder)
+     * @param {number} minLength Minimal length of the tag to be added
+     * @param {number} maxItems Maximal length of the tag to be added
+     * @param {number} maxItems Maximal number of items that are allowed to be added to the tags
+     * @param {boolean} uniqueNames Indicates if user can add only tags with unique names
+     * @param {string} delimiters Array of characters, on press on which new tag will be added
+     * @param {boolean} noPersist If set to true then user cannot add a new tag
+     * @param {boolean} isRemoveButton Indicates if remove button is enabled
+     * @param {boolean} isRestoreOnBackspace If set to true then tag will be restored (not deleted) to text when user press backspace
+     * @param {Function} decorator Function used to decorate and change representation (view) of the tag
+     * @param {number} caretPosition Used to control caret position in the tags input
+     * @param {Function} tokenInputValue Text value inside input
+     * @param {Function} containerWidth Component's width
      */
     angular.module('tagsInput').directive('tagsInput', tagsInput);
 
     /**
      * @ngInject
      */
-    function tagsInput(SelectedTokensRegistry, ArrayNgModelHelper, SelectedTokensValidator) {
+    function tagsInput(SelectedTokensRegistry, ArrayNgModelHelper, SelectedTokensValidator, $timeout) {
         return {
             scope: {
                 ngModel: '=',
-                caretPosition: '=?',
+                placeholder: '@',
                 minLength: '=?',
                 maxLength: '=?',
                 maxItems: '=?',
                 uniqueNames: '=?',
-                delimiters: '=?', // todo
+                delimiters: '@',
                 disabled: '=?',
-                persist: '=?',// todo
+                noPersist: '=?',
                 isRemoveButton: '=?',
                 isRestoreOnBackspace: '=?',
-                placeholder: '@',
                 decorator: '=?',
+                caretPosition: '=?',
                 tokenInputValue: '=?',
                 containerWidth: '=?'
             },
@@ -73,7 +88,7 @@ angular.module("tagsInput").run(["$templateCache", function($templateCache) {$te
 
                 scope.nameField             = selectOptionsCtrl.getItemNameWithoutPrefixes();
                 scope.containerWidth        = scope.containerWidth ? scope.containerWidth : element[0].offsetWidth;
-                scope.isRemoveButton        = angular.isDefined(scope.isRemoveButton) ? scope.isRemoveButton : true;
+                scope.isRemoveButtonEnabled = true;
 
                 // ---------------------------------------------------------------------
                 // Configuration
@@ -120,7 +135,7 @@ angular.module("tagsInput").run(["$templateCache", function($templateCache) {$te
                     input.value = '';
                     input.dispatchEvent(new CustomEvent('update'));
                     input.focus();
-                    scope.$emit('select-tags-input.text_entered', '');
+                    scope.$emit('tags-input.text_entered', '');
                 };
 
                 /**
@@ -130,9 +145,11 @@ angular.module("tagsInput").run(["$templateCache", function($templateCache) {$te
                 var addNewValueFromInput = function() {
                     var itemToBeAdded = {};
                     itemToBeAdded[scope.nameField] = scope.tokenInputValue.trim();
+                    if (scope.noPersist === true) return;
                     if (selectedTokensValidator.canItemBeAdded(ngModelHelper.getAll(), itemToBeAdded) === false) return;
 
                     ngModelHelper.add(itemToBeAdded, scope.caretPosition);
+                    modelChanged();
                     changeCaretPosition(scope.caretPosition + 1);
                     clearInputValue();
                 };
@@ -164,6 +181,7 @@ angular.module("tagsInput").run(["$templateCache", function($templateCache) {$te
                     if (scope.tokenInputValue || ngModelHelper.count() === 0) return;
 
                     ngModelHelper.removeAll(selectedTokens.getAll());
+                    modelChanged();
                     input.dispatchEvent(new CustomEvent('update'));
                     changeCaretPosition(ngModelHelper.count());
                     selectedTokens.clear();
@@ -182,10 +200,11 @@ angular.module("tagsInput").run(["$templateCache", function($templateCache) {$te
                         var removedToken = ngModelHelper.get(scope.caretPosition);
                         scope.tokenInputValue = removedToken[scope.nameField] + ' ';
                         input.value = scope.tokenInputValue;
-                        scope.$emit('select-tags-input.text_entered', input.value);
+                        scope.$emit('tags-input.text_entered', input.value);
                     }
 
                     ngModelHelper.removeAt(scope.caretPosition);
+                    modelChanged();
                     moveInputToPosition(scope.caretPosition);
                     input.dispatchEvent(new CustomEvent('update'));
                     input.focus();
@@ -198,10 +217,19 @@ angular.module("tagsInput").run(["$templateCache", function($templateCache) {$te
                     if (scope.tokenInputValue || ngModelHelper.count() === 0) return;
 
                     ngModelHelper.removeAt(scope.caretPosition);
+                    modelChanged();
                     moveInputToPosition(scope.caretPosition);
                     input.dispatchEvent(new CustomEvent('update'));
-                    scope.$emit('select-tags-input.text_entered', input.value);
+                    scope.$emit('tags-input.text_entered', input.value);
                     input.focus();
+                };
+
+                var modelChanged = function() {
+                    if (attrs.onChange) {
+                        $timeout(function() {
+                            selectOptionsCtrl.applyOnScope(attrs.onChange);
+                        });
+                    }
                 };
 
                 // ---------------------------------------------------------------------
@@ -228,7 +256,7 @@ angular.module("tagsInput").run(["$templateCache", function($templateCache) {$te
                  * @returns {string}
                  */
                 scope.getItemName = function(item) {
-                    var value = selectOptionsCtrl.parseItemName(item);
+                    var value = selectOptionsCtrl.parseItemValueFromSelection(item);
                     value = String(value).replace(/<[^>]+>/gm, ''); // strip html from the data here
                     return scope.decorator ? scope.decorator(item) : value;
                 };
@@ -238,7 +266,7 @@ angular.module("tagsInput").run(["$templateCache", function($templateCache) {$te
                  */
                 scope.onInputValueChange = function(value) {
                     input.dispatchEvent(new CustomEvent('update'));
-                    scope.$emit('select-tags-input.text_entered', value);
+                    scope.$emit('tags-input.text_entered', value);
                     selectedTokens.clear(); // remove bulk selected elements if user started to type
                 };
 
@@ -281,6 +309,7 @@ angular.module("tagsInput").run(["$templateCache", function($templateCache) {$te
                 scope.tagRemove = function(event, index) {
                     event.stopPropagation();
                     ngModelHelper.removeAt(index);
+                    modelChanged();
                     changeCaretPosition(ngModelHelper.count());
                     selectedTokens.clear();
                     input.blur();
@@ -336,6 +365,19 @@ angular.module("tagsInput").run(["$templateCache", function($templateCache) {$te
                     }
                 });
 
+                // listen to key press to check if delimiter is pressed and we need to add a new tag
+                element[0].addEventListener('keypress', function (e) {
+                    var isAdded = false;
+                    angular.forEach(scope.delimiters, function(delimiter) {
+                        if (isAdded === false && e.keyCode === delimiter.charCodeAt(0)) {
+                            addNewValueFromInput();
+                            e.preventDefault();
+                            scope.$apply(); // note: don't use $digest here because it will cause a lag
+                            isAdded = true;
+                        }
+                    });
+                });
+
                 // close dropdown, reset caret and other things if use clicks outside of this directive
                 document.addEventListener('mousedown', function() {
                     if (element[0].contains(event.target)) return;
@@ -361,12 +403,18 @@ angular.module("tagsInput").run(["$templateCache", function($templateCache) {$te
                     changeCaretPosition(newPosition);
                 });
 
+                // listen for remove button to enable or disable it
+                scope.$watch('isRemoveButton', function(isRemoveButton) {
+                    if (!angular.isDefined(scope.isRemoveButton)) return;
+                    scope.isRemoveButtonEnabled = isRemoveButton;
+                });
+
                 // ---------------------------------------------------------------------
                 // Event listeners
                 // ---------------------------------------------------------------------
 
                 // this event request tags input to clear itself
-                scope.$on('select-tags-input.clear_input', function() {
+                scope.$on('tags-input.clear_input', function() {
                     clearInputValue();
                 });
 

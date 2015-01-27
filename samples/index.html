@@ -15,7 +15,7 @@
     <script src="tagsInputSample.js"></script>
 
 </head>
-<body ng-app="tagsInputSample">
+<body ng-app="tagsInputSample" ng-controller="TagsInputSampleCtrl">
 
     <!-- =================================================================== -->
 
@@ -63,10 +63,10 @@
 
     <!-- =================================================================== -->
 
-    <h1>Delimiter character that can be used to add separated tags</h1>
+    <h1>Delimiter character that can be used to add separated tags (use "," and ";")</h1>
     <tags-input placeholder="Add your tags here"
                 ng-model="myTags6"
-                delimiters="[',', '.']"
+                delimiters=",;"
                 select-options="tag.name for tag in tags">
     </tags-input>
 
@@ -74,7 +74,7 @@
 
     <h1>Persist disabled (cannot add a new tags)</h1>
     <tags-input placeholder="Add your tags here"
-                persist="false"
+                no-persist="true"
                 ng-model="myTags6"
                 select-options="tag.name for tag in tags">
     </tags-input>
@@ -118,6 +118,19 @@
                 ng-model="myTags9"
                 select-options="tag.name for tag in tags">
     </tags-input>
+
+    <!-- =================================================================== -->
+
+    <h1>Using ng-change to run a callback when model is changing</h1>
+
+    <tags-input placeholder="Add your tags here"
+                ng-model="myTags10"
+                on-change="changed(selectedUsers)"
+                select-options="tag.name for tag in tags">
+    </tags-input>
+
+    <br/>
+    Is $scope.changed called: <b>{{ isChangedCalled ? 'yes' : 'no' }}</b><br/>
 
     <!-- =================================================================== -->
 

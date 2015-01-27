@@ -1,10 +1,10 @@
-<div class="token-input-container" ng-attr-style="max-width: {{ containerWidth }}px" disable-all="disabled">
+<div class="tags-input" ng-attr-style="max-width: {{ containerWidth }}px" disable-all="disabled">
     <div ng-repeat="tag in getTags()" class="token-item">
         <div class="token" tabindex="{{ $index }}"
              ng-click="tagSelect($event, tag)"
              ng-class="{ selected: isSelected(tag) }">
             <div class="token-template" ng-bind-html="getItemName(tag)"></div>
-            <a class="token-remove" ng-show="isRemoveButton" ng-click="tagRemove($event, $index)">×</a>
+            <a class="token-remove" ng-show="isRemoveButtonEnabled" ng-click="tagRemove($event, $index)">×</a>
         </div>
 
     </div>

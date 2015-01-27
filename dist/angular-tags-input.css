@@ -1,29 +1,6 @@
-/* select-tags base styles */
-
-.select-tags:focus{
-    outline: none;
-}
-
-.select-tags {
-    width: 350px;
-}
-
-.select-tags .open-dropdown {
-    margin-top: -2px;
-    border: none !important;
-}
-
-.select-tags .open-dropdown .select-items{
-    border: 1px solid #DDD;
-}
-
-.select-tags :focus, .select-dropdown:focus {
-    outline: none;
-}
-
 /* select-items-box base styles */
 
-.token-input-container {
+.tags-input {
     /*position: relative;
     z-index: 1;*/
     overflow: hidden;
@@ -34,15 +11,15 @@
     -moz-border-radius: 3px;
 }
 
-.token-input-container .token a:hover{
+.tags-input .token a:hover{
     color: rgba(21, 15, 22, 0.82);
 }
 
-.token-input-container .token:focus {
+.tags-input .token:focus {
     outline: none;
 }
 
-.token-input-container .token-item {
+.tags-input .token-item {
     display: inline-block;
     -webkit-user-select: none;
     -moz-user-select: none;
@@ -50,7 +27,7 @@
     user-select: none;
 }
 
-.token-input-container .token {
+.tags-input .token {
     /* background: none; */
     display: inline-block;
     vertical-align: baseline;
@@ -66,7 +43,7 @@
 
 }
 
-.token-input-container input {
+.tags-input input {
 
     display: inline-block;
     width: 4px;
@@ -125,23 +102,22 @@
     -moz-box-shadow: none;
 }
 
-.token-input-container .token.selected {
+.tags-input .token.selected {
     opacity: .7;
-
 }
 
-.token-input-container .remove-token:hover {
+.tags-input .remove-token:hover {
     text-decoration: none;
     background: rgba(0, 0, 0, 0.05);
     color: #fff;
 
 }
 
-.token-input-container .token-template {
+.tags-input .token-template {
     display: inline-block;
 }
 
-.token-input-container .token-remove {
+.tags-input .token-remove {
     display: inline-block;
     width: 17px;
     font-weight: bold;
@@ -155,10 +131,9 @@
     -moz-box-sizing: border-box;
     box-sizing: border-box;
     color: #999;
-
 }
 
-.token-input-container .loading {
+.tags-input .loading {
     -moz-transition: opacity 0.2s;
     -webkit-transition: opacity 0.2s;
     transition: opacity 0.2s;
@@ -180,6 +155,22 @@
     color: #EFD100;
 }
 
+/* disabled state */
+.tags-input.disable-all {
+    background-color: #fcfcfc;
+}
+.tags-input.disable-all .typeahead-box {
+    border: 1px solid #f0f0f0;
+}
+
+.tags-input.disable-all .token {
+    background-color: #ebebeb;
+}
+.tags-input.disable-all .token a:hover {
+    color: #999;
+}
+
+/* ----- */
 .select-dropdown {
     position: absolute;
     z-index: 10;
