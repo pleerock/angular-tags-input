@@ -1,8 +1,7 @@
 tags-input directive for AngularJS
 ========================
 
-This directive allows your inputs to grow as soon as user types.
-The input's width always fit the text user typed in the input.
+This directive allows to type into input small tags and store their values in ng-model.
 
 Open samples/index.html to see the examples how to use this directive.
 
