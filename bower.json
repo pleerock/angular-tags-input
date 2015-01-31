@@ -28,7 +28,10 @@
     "test"
   ],
   "dependencies": {
-    "angular": ">= 1.0.8"
+    "angular": ">= 1.0.8",
+    "angular-auto-grow-input": "master",
+    "angular-select-options": "master",
+    "angular-disable-all": "master"
   },
   "devDependencies": {
     "angular-mocks": ">= 1.0.8",
