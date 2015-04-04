@@ -146,7 +146,7 @@
     width: 16px;
     height: 16px;
     margin: -8px 0 0 0;
-    background: url('spinner.gif');
+    /*background: url('spinner.gif');*/
     background-size: 16px 16px;
     opacity: 0.4;
 }

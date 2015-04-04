@@ -58,7 +58,7 @@
             replace: true,
             restrict: 'E',
             require: ['ngModel', 'selectOptions'],
-            templateUrl: '../src/tags-input/src/tags-input.html',
+            templateUrl: 'tags-input.html',
             controller: 'TagsInputCtrl'
         }
     }
