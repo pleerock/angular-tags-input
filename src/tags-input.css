@@ -15,7 +15,7 @@
     color: rgba(21, 15, 22, 0.82);
 }
 
-.tags-input .token:focus {
+.tags-input:focus, .tags-input .token:focus {
     outline: none;
 }
 
