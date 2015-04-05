@@ -13,7 +13,7 @@
     angular.module('tagsInput', ['autoGrowInput', 'selectOptions', 'disableAll', 'ngSanitize']);
 
 })();
-angular.module("tagsInput").run(["$templateCache", function($templateCache) {$templateCache.put("tags-input.html","<div class=\"tags-input\" ng-attr-style=\"max-width: {{ containerWidth }}px\" disable-all=\"disabled\">\n    <div ng-repeat=\"tag in getTags()\" class=\"token-item\">\n        <div class=\"token\" tabindex=\"{{ $index }}\"\n             ng-click=\"tagSelect($event, tag)\"\n             ng-class=\"{ selected: isSelected(tag) }\">\n            <div class=\"token-template\" ng-bind-html=\"getItemName(tag)\"></div>\n            <a class=\"token-remove\" ng-show=\"isRemoveButtonEnabled\" ng-click=\"tagRemove($event, $index)\">×</a>\n        </div>\n\n    </div>\n    <div class=\"token-item\">\n        <input auto-grow-input\n               ng-model=\"tokenInputValue\"\n               ng-change=\"onInputValueChange(tokenInputValue)\"\n               ng-attr-placeholder=\"{{ !getTags().length ? placeholder : \'\' }}\"\n               autocomplete=\"off\"\n               ng-disabled=\"isDisabled\">\n    </div>\n    <div class=\"loading\" ng-show=\"loadingInProgress\"></div>\n</div>\n");}]);
+angular.module("tagsInput").run(["$templateCache", function($templateCache) {$templateCache.put("tags-input.html","<div class=\"tags-input\" ng-attr-style=\"{{ getContainerWidth() > 0 ? \'max-width: \' + getContainerWidth()  + \'px\' : \'\' }}\" disable-all=\"disabled\">\n    <div ng-repeat=\"tag in getTags()\" class=\"token-item\">\n        <div class=\"token\" tabindex=\"{{ $index }}\"\n             ng-click=\"tagSelect($event, tag)\"\n             ng-class=\"{ selected: isSelected(tag) }\">\n            <div class=\"token-template\" ng-bind-html=\"getItemName(tag)\"></div>\n            <a class=\"token-remove\" ng-show=\"isRemoveButtonEnabled\" ng-click=\"tagRemove($event, $index)\">×</a>\n        </div>\n\n    </div>\n    <div class=\"token-item\">\n        <input auto-grow-input\n               ng-model=\"tokenInputValue\"\n               ng-change=\"onInputValueChange(tokenInputValue)\"\n               ng-attr-placeholder=\"{{ !getTags().length ? placeholder : \'\' }}\"\n               autocomplete=\"off\"\n               ng-disabled=\"isDisabled\">\n    </div>\n    <div class=\"loading\" ng-show=\"loadingInProgress\"></div>\n</div>\n");}]);
 /**
  * @author Umed Khudoiberdiev <info@zar.tj>
  */
@@ -23,6 +23,7 @@ angular.module("tagsInput").run(["$templateCache", function($templateCache) {$te
     /**
      * @ngdoc directive
      * @name tagsInput
+     * @restrict E
      * @description
      * A special angular directive that allows to add "tags" into input box.
      *
@@ -101,7 +102,6 @@ angular.module("tagsInput").run(["$templateCache", function($templateCache) {$te
         // Scope variables
         // ---------------------------------------------------------------------
 
-        $scope.containerWidth        = $scope.containerWidth ? $scope.containerWidth : $element[0].offsetWidth;
         $scope.isRemoveButtonEnabled = true;
 
         // ---------------------------------------------------------------------
@@ -263,6 +263,15 @@ angular.module("tagsInput").run(["$templateCache", function($templateCache) {$te
         // ---------------------------------------------------------------------
         // Scope functions
         // ---------------------------------------------------------------------
+
+        /**
+         * Gets container width.
+         *
+         * @returns {number}
+         */
+        $scope.getContainerWidth = function() {
+            return $scope.containerWidth ? $scope.containerWidth : $element[0].offsetWidth;
+        };
 
         /**
          * Gets the items that will be displayed as tags.

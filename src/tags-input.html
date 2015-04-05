@@ -1,4 +1,4 @@
-<div class="tags-input" ng-attr-style="max-width: {{ containerWidth }}px" disable-all="disabled">
+<div class="tags-input" ng-attr-style="{{ getContainerWidth() > 0 ? 'max-width: ' + getContainerWidth()  + 'px' : '' }}" disable-all="disabled">
     <div ng-repeat="tag in getTags()" class="token-item">
         <div class="token" tabindex="{{ $index }}"
              ng-click="tagSelect($event, tag)"

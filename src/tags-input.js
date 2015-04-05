@@ -7,6 +7,7 @@
     /**
      * @ngdoc directive
      * @name tagsInput
+     * @restrict E
      * @description
      * A special angular directive that allows to add "tags" into input box.
      *
@@ -85,7 +86,6 @@
         // Scope variables
         // ---------------------------------------------------------------------
 
-        $scope.containerWidth        = $scope.containerWidth ? $scope.containerWidth : $element[0].offsetWidth;
         $scope.isRemoveButtonEnabled = true;
 
         // ---------------------------------------------------------------------
@@ -247,6 +247,15 @@
         // ---------------------------------------------------------------------
         // Scope functions
         // ---------------------------------------------------------------------
+
+        /**
+         * Gets container width.
+         *
+         * @returns {number}
+         */
+        $scope.getContainerWidth = function() {
+            return $scope.containerWidth ? $scope.containerWidth : $element[0].offsetWidth;
+        };
 
         /**
          * Gets the items that will be displayed as tags.
