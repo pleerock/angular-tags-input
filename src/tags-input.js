@@ -156,6 +156,7 @@
          * got from the input. After adding a new item, input is cleared.
          */
         var addNewValueFromInput = function() {
+            if (!$scope.tokenInputValue) return;
             var itemToBeAdded = selectOptionsCtrl.createItem($scope.tokenInputValue.trim());
             if ($scope.noPersist === true) return;
             if (selectedTokensValidator.canItemBeAdded(ngModelHelper.getAll(), itemToBeAdded) === false) return;
@@ -400,7 +401,7 @@
         });
 
         // close dropdown, reset caret and other things if use clicks outside of this directive
-        document.addEventListener('mousedown', function() {
+        document.addEventListener('mousedown', function(event) {
             if ($element[0].contains(event.target)) return;
 
             selectedTokens.clear();
