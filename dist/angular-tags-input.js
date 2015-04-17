@@ -359,8 +359,8 @@ angular.module("tagsInput").run(["$templateCache", function($templateCache) {$te
 
         // when user clicks on the container it must automatically activate its input
         $element[0].addEventListener('click', function () {
-            input.focus();
             changeCaretPosition(ngModelHelper.count());
+            input.focus();
             selectedTokens.clear(); // remove bulk selected elements if user started to type
             $scope.$digest();
         });
