@@ -23,6 +23,10 @@
              */
             var options;
 
+            var getRealItemName = function(item) {
+                return options.nameField ? item[options.nameField] : item;
+            };
+
             /**
              * Sets the options required to perform validation.
              *
@@ -45,8 +49,9 @@
 
                 var found = false;
                 angular.forEach(tokens, function(token) {
-                    var tokenName = token[options.nameField];
-                    if (tokenName && tokenName.toLowerCase() === item[options.nameField].toLowerCase())
+                    var tokenName = getRealItemName(token);
+                    var itemName  = getRealItemName(item);
+                    if (tokenName && itemName && tokenName.toLowerCase() === itemName.toLowerCase())
                         found = true;
                 });
 
@@ -60,7 +65,7 @@
              * @returns {boolean}
              */
             this.isNotEmpty = function(item) {
-                return item[options.nameField].length > 0;
+                return getRealItemName(item).length > 0;
             };
 
             /**
@@ -70,7 +75,7 @@
              * @returns {boolean}
              */
             this.isNotShort = function(item) {
-                return angular.isUndefined(options.minLength) || item[options.nameField].length >= options.minLength;
+                return angular.isUndefined(options.minLength) || getRealItemName(item).length >= options.minLength;
             };
 
             /**
@@ -80,7 +85,7 @@
              * @returns {boolean}
              */
             this.isNotLong = function(item) {
-                return angular.isUndefined(options.maxLength) || item[options.nameField].length <= options.maxLength;
+                return angular.isUndefined(options.maxLength) || getRealItemName(item).length <= options.maxLength;
             };
 
             /**

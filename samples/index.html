@@ -30,6 +30,17 @@
                select-options="tag.name for tag in tags">
     </tags-input>
 
+    {{ myTags }}
+
+    <!-- =================================================================== -->
+
+    <h1>Tag non objects, just regular strings</h1>
+    <tags-input placeholder="Add your tags here"
+                ng-model="myTagStrings"
+                min-length="3"
+                select-options="tag for tag in tagStrings">
+    </tags-input>
+
     <!-- =================================================================== -->
 
     <h1>Tag add with minimal 3 characters length word</h1>

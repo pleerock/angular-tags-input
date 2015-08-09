@@ -211,7 +211,7 @@
 
             if ($scope.isRestoreOnBackspace) {
                 var removedToken = ngModelHelper.get($scope.caretPosition);
-                $scope.tokenInputValue = removedToken[nameField] + ' ';
+                $scope.tokenInputValue = (nameField ? removedToken[nameField] : removedToken) + ' ';
                 input.value = $scope.tokenInputValue;
                 dispatchTextEntered(input.value);
             }

@@ -227,7 +227,7 @@ angular.module("tagsInput").run(["$templateCache", function($templateCache) {$te
 
             if ($scope.isRestoreOnBackspace) {
                 var removedToken = ngModelHelper.get($scope.caretPosition);
-                $scope.tokenInputValue = removedToken[nameField] + ' ';
+                $scope.tokenInputValue = (nameField ? removedToken[nameField] : removedToken) + ' ';
                 input.value = $scope.tokenInputValue;
                 dispatchTextEntered(input.value);
             }
@@ -484,6 +484,10 @@ angular.module("tagsInput").run(["$templateCache", function($templateCache) {$te
              */
             var options;
 
+            var getRealItemName = function(item) {
+                return options.nameField ? item[options.nameField] : item;
+            };
+
             /**
              * Sets the options required to perform validation.
              *
@@ -506,8 +510,9 @@ angular.module("tagsInput").run(["$templateCache", function($templateCache) {$te
 
                 var found = false;
                 angular.forEach(tokens, function(token) {
-                    var tokenName = token[options.nameField];
-                    if (tokenName && tokenName.toLowerCase() === item[options.nameField].toLowerCase())
+                    var tokenName = getRealItemName(token);
+                    var itemName  = getRealItemName(item);
+                    if (tokenName && itemName && tokenName.toLowerCase() === itemName.toLowerCase())
                         found = true;
                 });
 
@@ -521,7 +526,7 @@ angular.module("tagsInput").run(["$templateCache", function($templateCache) {$te
              * @returns {boolean}
              */
             this.isNotEmpty = function(item) {
-                return item[options.nameField].length > 0;
+                return getRealItemName(item).length > 0;
             };
 
             /**
@@ -531,7 +536,7 @@ angular.module("tagsInput").run(["$templateCache", function($templateCache) {$te
              * @returns {boolean}
              */
             this.isNotShort = function(item) {
-                return angular.isUndefined(options.minLength) || item[options.nameField].length >= options.minLength;
+                return angular.isUndefined(options.minLength) || getRealItemName(item).length >= options.minLength;
             };
 
             /**
@@ -541,7 +546,7 @@ angular.module("tagsInput").run(["$templateCache", function($templateCache) {$te
              * @returns {boolean}
              */
             this.isNotLong = function(item) {
-                return angular.isUndefined(options.maxLength) || item[options.nameField].length <= options.maxLength;
+                return angular.isUndefined(options.maxLength) || getRealItemName(item).length <= options.maxLength;
             };
 
             /**
