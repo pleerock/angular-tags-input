@@ -173,7 +173,7 @@
 /* ----- */
 .select-dropdown {
     position: absolute;
-    z-index: 10;
+    /* problem with this when open-dropdown covers select-dropdown z-index: 10;*/
     margin: 1px 0 0 0;
     width: 100%;
     background-color: #ffffff;
